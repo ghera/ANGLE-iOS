@@ -100,17 +100,19 @@ EOM
 #include <libGLESv2/angle_gl.h>
 EOM
     # replace include paths
+    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <KHR/|#include <libGLESv2/KHR/|g' {} +
+    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <GLES/|#include <libGLESv2/GLES/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <GLES2/|#include <libGLESv2/GLES2/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <GLES3/|#include <libGLESv2/GLES3/|g' {} +
-    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <KHR/|#include <libGLESv2/KHR/|g' {} +
+    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' -E 's|#include "(GLES[0-3]?/[^"]+)"|#include <libGLESv2/\1>|g' {} +
   elif [ "$FRAMEWORK_MODULE" = "libEGL" ]; then
     cat > "${FRAMEWORK_DIR}/Headers/${FRAMEWORK_MODULE}.h" <<EOM
 #include <libEGL/EGL/egl.h>
 #include <libEGL/EGL/eglext.h>
 EOM
     # replace include paths
-    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <EGL/|#include <libEGL/EGL/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <KHR/|#include <libEGL/KHR/|g' {} +
+    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <EGL/|#include <libEGL/EGL/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include "eglext_angle.h"|#include <libEGL/EGL/eglext_angle.h>|g' {} +
   fi
 
