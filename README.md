@@ -11,10 +11,12 @@ This repository provides a script to build ANGLE as an iOS XCFramework, ready to
 
 ### 1) Install depot_tools
 
+```bash
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH=`pwd`/depot_tools:$PATH
 mkdir angle && cd angle
 fetch angle
+```
 
 ---
 
@@ -22,10 +24,13 @@ fetch angle
 
 You can retrieve the latest stable Chromium release using:
 
+```bash
 curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=iOS&num=1"
+```
 
 Example output:
 
+```json
 [
   {
     "channel": "Stable",
@@ -47,39 +52,49 @@ Example output:
     "version": "144.0.7559.85"
   }
 ]
+```
 
 From this, you can extract the ANGLE commit hash:
 
+```bash
 curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=iOS&num=1" | jq -r '.[0].hashes.angle'
+```
 
 Then checkout and sync dependencies:
 
+```bash
 git fetch
 git checkout a96fca8d5ee2ca61e8de419e38cd577579281c9e
 gclient sync
-
+```
 ---
 
 ## 3) Build the XCFramework
 
 Customize the configuration if needed:
 
+```bash
 ### CONFIG ###
 IOS_DEPLOYMENT_TARGET="14.0"
 OUT_DIR="out"
 XC_OUT="xcframework"
 HEADERS_DIR="xcframework_headers"
 ANGLE_DIR="angle"
+```
 
 Then run the build script from the parent folder of the ANGLE repository:
 
+```bash
 ./build_angle_xcframework.sh
+```
 
 This will generate:
 
+```bash
 xcframework/
 ├── libEGL.xcframework
 ├── libGLESv2.xcframework
+```
 
 Both frameworks include:
 
