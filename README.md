@@ -22,7 +22,7 @@ fetch angle
 
 ### 2) Checkout the latest stable version (optional)
 
-You can retrieve the latest stable Chromium release using:
+You can retrieve the latest stable Chromium release with:
 
 ```bash
 curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=iOS&num=1"
@@ -54,13 +54,19 @@ Example output:
 ]
 ```
 
-From this, you can extract the ANGLE commit hash:
+From this output, you can extract the ANGLE commit hash:
+
+```json
+"angle": "a96fca8d5ee2ca61e8de419e38cd577579281c9e"
+```
+
+Or retrieve it directly with the following one-liner:
 
 ```bash
 curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=iOS&num=1" | jq -r '.[0].hashes.angle'
 ```
 
-Then checkout and sync dependencies:
+Then check out the commit and sync dependencies:
 
 ```bash
 git fetch
@@ -91,9 +97,9 @@ Then run the build script from the parent folder of the ANGLE repository:
 This will generate:
 
 ```bash
-xcframework/
+angle/xcframework
 ├── libEGL.xcframework
-├── libGLESv2.xcframework
+└── libGLESv2.xcframework
 ```
 
 Both frameworks include:
@@ -102,14 +108,6 @@ Both frameworks include:
 - Correct Headers/ directories  
 - Umbrella headers (libEGL.h and libGLESv2.h)  
 - Modules/module.modulemap ready for Xcode  
-
----
-
-## Notes
-
-- Make sure depot_tools is in your PATH before building  
-- The script automatically handles module maps and umbrella headers  
-- The XCFrameworks are ready to import directly in your Xcode projects  
 
 ---
 
