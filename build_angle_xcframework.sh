@@ -99,7 +99,10 @@ EOM
     cat > "${FRAMEWORK_DIR}/Headers/${FRAMEWORK_MODULE}.h" <<EOM
 #include <libGLESv2/angle_gl.h>
 EOM
+    # remove unnecessary header
+    rm -rf "${FRAMEWORK_DIR}/Headers/GLES/egl.h"
     # replace include paths
+    find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include "gl2ext_angle.h"|#include <libGLESv2/GLES2/gl2ext_angle.h>|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <KHR/|#include <libGLESv2/KHR/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <GLES/|#include <libGLESv2/GLES/|g' {} +
     find "${FRAMEWORK_DIR}/Headers" -type f -name "*.h" -exec sed -i '' 's|#include <GLES2/|#include <libGLESv2/GLES2/|g' {} +
