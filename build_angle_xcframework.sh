@@ -139,4 +139,4 @@ xcodebuild -create-xcframework \
   -output "${XC_OUT}/libGLESv2.xcframework"
 
 ### DONE ###
-echo "✅ XCFrameworks generated in ./${XC_OUT}"
+echo "✅ XCFrameworks generated in ${ANGLE_DIR}/${XC_OUT}"
