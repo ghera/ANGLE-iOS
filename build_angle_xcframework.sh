@@ -45,6 +45,16 @@ target_environment=\"simulator\"
 
 ninja -C "${OUT_DIR}/ios-sim-arm64" libEGL libGLESv2
 
+### iOS SIMULATOR (Intel) ###
+echo "▶ Building iOS simulator (x86_64)…"
+gn gen "${OUT_DIR}/ios-sim-x86_64" --args="
+${COMMON_ARGS}
+target_cpu=\"x64\"
+target_environment=\"simulator\"
+"
+
+ninja -C "${OUT_DIR}/ios-sim-x86_64" libEGL libGLESv2
+
 ### HEADERS ###
 echo "▶ Collecting headers…"
 mkdir -p "${HEADERS_DIR}"
@@ -126,16 +136,27 @@ EOM
   /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 1" "$FRAMEWORK_DIR/Info.plist"
 done
 
+### FAT SIMULATOR FRAMEWORKS ###
+echo "▶ Creating fat simulator frameworks (arm64 + x86_64)…"
+mkdir -p "${OUT_DIR}/sim-fat"
+for FW in libEGL libGLESv2; do
+  cp -R "${OUT_DIR}/ios-sim-arm64/${FW}.framework" "${OUT_DIR}/sim-fat/${FW}.framework"
+  lipo -create \
+    "${OUT_DIR}/ios-sim-arm64/${FW}.framework/${FW}" \
+    "${OUT_DIR}/ios-sim-x86_64/${FW}.framework/${FW}" \
+    -output "${OUT_DIR}/sim-fat/${FW}.framework/${FW}"
+done
+
 echo "▶ Creating libEGL.xcframework…"
 xcodebuild -create-xcframework \
   -framework "${OUT_DIR}/ios-arm64/libEGL.framework" \
-  -framework "${OUT_DIR}/ios-sim-arm64/libEGL.framework" \
+  -framework "${OUT_DIR}/sim-fat/libEGL.framework" \
   -output "${XC_OUT}/libEGL.xcframework"
 
 echo "▶ Creating libGLESv2.xcframework…"
 xcodebuild -create-xcframework \
   -framework "${OUT_DIR}/ios-arm64/libGLESv2.framework" \
-  -framework "${OUT_DIR}/ios-sim-arm64/libGLESv2.framework" \
+  -framework "${OUT_DIR}/sim-fat/libGLESv2.framework" \
   -output "${XC_OUT}/libGLESv2.xcframework"
 
 ### DONE ###
