@@ -39,14 +39,15 @@ fi
 cd "$ANGLE_DIR"
 
 echo "Fetching updates from origin..."
-git fetch --tags --quiet origin 2>&1 | tail -5 || true
+git fetch --tags --quiet origin
 
 echo "Checking out $ANGLE_HASH ..."
 git checkout "$ANGLE_HASH"
 
 ### SYNC ###
 echo "Syncing dependencies with gclient sync..."
-gclient sync -D --with_branch_heads --with_tags --nohooks 2>&1 | tail -10 || true
+gclient sync
+echo "Dependencies in sync with DEPS."
 
 ### DONE ###
 CURRENT_HASH=$(git rev-parse HEAD)
@@ -67,5 +68,6 @@ if [[ "$CURRENT_HASH" == "$ANGLE_HASH"* ]]; then
   echo ""
   echo "ANGLE ${MAJOR}.${MINOR}.${REV} git hash: ${SHORT_HASH}"
 else
-  echo "Checkout may have failed (HEAD=$CURRENT_HASH)."
+  echo "Checkout failed (HEAD=$CURRENT_HASH, wanted $ANGLE_HASH)." >&2
+  exit 1
 fi
